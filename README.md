@@ -9,18 +9,25 @@ Data Science Lab 2020 - Bees
 
 ## Ideas
 - Bee carries pollen ⇒  Always incoming 
-- What's the best way to get the colour of the pollen? There has to be some good non-ML method
+- What's the best way to get the colour of the pollen? There has to be some good non-ML method (eg [https://ieeexplore.ieee.org/abstract/document/8354145](this one))
+
+## Extra datasets
+- [https://github.com/piperod/PollenDataset](Pollen Dataset): More cropped images of bees labeled per instance P/NP
+- [https://groups.oist.jp/bptu/honeybee-tracking-dataset](Honeybee tracking): Segmented videos of bees inside the hive. Probably not usable for us.
 
 ## NAS
+[https://drive.google.com/file/d/1-Y--t0fuEOe46c2S9qMFx2HPsCTu8ubN/view?usp=sharing](PDF Classification Guideline)
+
+
 1. *Backups*: Who knows
 2. ~~bee_jsons: empty~~
-3. *classified_bees*: Pictures of indiv bees, cropped to 200x200. Labelled through filename into P (pollen), NP (no pollen), M (missing?). Three different days, hive united queens. Total: ~1200 images.
+3. *classified_bees*: Pictures of indiv bees, cropped to 200x200. Labelled through filename into P (pollen), NP (no pollen), M (missclassified ). Three different days, hive united queens. Total: ~1200 images.
 4. *extracted_bees*: under images_old ~6500 unlabeled, cropped images of indiv bees
 5. *images*: under tracker_output ~14000 unlabled, cropped images of indiv bees
 6. *models*: Two model files detector and classifier.
-7. *object_detection*:
-    1. *images*: TODO
-    2. *labeling_new*: Different hives, bee bounding boxes labeled via .txt and .xml, ~4300
+7. *object_detection*: Gabriela + Pascal stuff. Everything else (except videos) is from last year
+    1. *images*: Old stuff that Gabriela will delete
+    2. *labeling_new*: Different hives, bee bounding boxes labeled via .txt and .xml, ~4300. This is what Daniela + Pascal worked with
     3. Some further folders with their YOLO stuff
 8. *pollen_frames*:
     1. *images*: Full images of hive entry, some of them classified into P/NP but no bounding boxes. Prob unusable.
