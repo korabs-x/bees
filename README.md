@@ -18,6 +18,28 @@ Data Science Lab 2020 - Bees
 - [https://www.kaggle.com/jerzydziewierz/bee-vs-wasp] (Bee vs wasp): 3183 images of bees on flowers. Probably not usable for us.
 - [https://groups.oist.jp/bptu/honeybee-tracking-dataset] (Honeybee tracking): Segmented videos of bees inside the hive. Probably not usable for us.
 
+## Current plan
+Structure:
+- Improve tracking
+  - Based on result of YOLO (don't touch)
+  - Predict / extract direction and velocity
+  - Create new optimization problem to be solved for tracking
+  - Check differing predictions between old & new algorithm to quantify improvement (assume non-differing predictions are correct)
+- Pollen detection
+  - Train simple pollen detection using the so far labeled images
+  - Optional: Use predictions of network to select images for further labelling pollen in a balanced manner
+  - Label pollen position for object detection
+  - Train multi-task architecture
+    - Autoencoder (unsupervised)
+    - Pollen detection (supervised)
+    - ? Pollen color detection (supervised)
+    - ? Pollen object detection (supervised) (Not sure if this makes sense in same network)
+    - ? Anything else?
+  - Combine predictions for sequential images of tracked bees to improve performance
+- Pollen color clustering
+  - Color correction (using sequential images + reference pixels)
+  - Cluster colors
+
 ## NAS
 [https://drive.google.com/file/d/1-Y--t0fuEOe46c2S9qMFx2HPsCTu8ubN/view?usp=sharing](PDF Classification Guideline)
 
