@@ -23,12 +23,19 @@ Structure:
 - Improve tracking
   - Based on result of YOLO (don't touch)
   - Predict / extract direction and velocity
+    - Try non-ML
+    - Try direction dataset
+    - Label ourselves
   - Create new optimization problem to be solved for tracking
   - Check differing predictions between old & new algorithm to quantify improvement (assume non-differing predictions are correct)
 - Pollen detection
-  - Train simple pollen detection using the so far labeled images
-  - Optional: Use predictions of network to select images for further labelling pollen in a balanced manner
-  - Label pollen position for object detection
+  - ? General: Would it make sense to subtract background from images? (Background is known from images before and after bee is there, YOLO tells us when there is no bee so we can extract background)
+  - Optional if we need more Pollen/NoPollen labels:
+    - Train simple pollen detection using the so far labeled images
+    - Use predictions of network to select images for further labelling pollen in a balanced manner
+  - Generate dataset for pollen object detection
+    - Try non-ML based on color
+    - Label pollen frames
   - Train multi-task architecture
     - Autoencoder (unsupervised)
     - Pollen detection (supervised)
