@@ -12,8 +12,11 @@ Data Science Lab 2020 - Bees
 - What's the best way to get the colour of the pollen? There has to be some good non-ML method (eg [https://ieeexplore.ieee.org/abstract/document/8354145](this one))
 
 ## Extra datasets
-- [https://github.com/piperod/PollenDataset](Pollen Dataset): More cropped images of bees labeled per instance P/NP
-- [https://groups.oist.jp/bptu/honeybee-tracking-dataset](Honeybee tracking): Segmented videos of bees inside the hive. Probably not usable for us.
+- [https://github.com/piperod/PollenDataset] (Pollen Dataset): More cropped images of bees labeled per instance P/NP
+- [https://www.kaggle.com/kport354041/honeybee-positions] (Honeybee positions): Images the whole hive for tracking bees, includes position & orientation of bees. Might be able to use it for direction prediction, have to crop images of individual bees first.
+- [https://www.kaggle.com/jenny18/honey-bee-annotated-images?] (Honeybee annotated images): 5100 bee images with annotations including pollen (only 18 with pollen). Any ideas if this is useful? I (Korbi) cannot think of how.
+- [https://www.kaggle.com/jerzydziewierz/bee-vs-wasp] (Bee vs wasp): 3183 images of bees on flowers. Probably not usable for us.
+- [https://groups.oist.jp/bptu/honeybee-tracking-dataset] (Honeybee tracking): Segmented videos of bees inside the hive. Probably not usable for us.
 
 ## NAS
 [https://drive.google.com/file/d/1-Y--t0fuEOe46c2S9qMFx2HPsCTu8ubN/view?usp=sharing](PDF Classification Guideline)
