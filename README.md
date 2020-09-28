@@ -18,6 +18,14 @@ Data Science Lab 2020 - Bees
 - [Bee vs wasp](https://www.kaggle.com/jerzydziewierz/bee-vs-wasp) : 3183 images of bees on flowers. Probably not usable for us.
 - [Honeybee tracking](https://groups.oist.jp/bptu/honeybee-tracking-dataset) : Segmented videos of bees inside the hive. Probably not usable for us.
 
+## Links
+- [Main google drive](https://drive.google.com/drive/u/1/folders/11zfaUx1bwnpHb72if4Cl7ZVFiik_9arI)
+- [Platform code](https://gitlab.com/beewatch/beewatch)
+- [Code of last year's group](https://gitlab.ethz.ch/dykemann/bees/-/tree/master)
+- [Sciwheel](https://sciwheel.com/work/#/items?collection=322790)
+- [Presentation](https://docs.google.com/presentation/d/1xgliKl0nmlCtK580alNtLTH64os2Mr89TsbV_z9ixqo)
+- [Asana](https://app.asana.com/0/1194842906932241/1194842906932249)
+
 ## Current plan
 Structure:
 - Improve tracking
