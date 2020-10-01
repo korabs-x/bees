@@ -1,11 +1,6 @@
 # bees
 Data Science Lab 2020 - Bees
 
-Codebases:
-- [Beewatch Platform (Anna and Vladimir)](https://gitlab.com/beewatch/beewatch)
-- [Last year DS Lab](https://gitlab.ethz.ch/dykemann/bees)
-- [GDrive with Yolo object detection (Gabriela)](https://drive.google.com/drive/folders/1tu7YV5I1Xjz1n9GtIPMBlzkZ3ODF3YEQ)
-
 ## Potential Tasks
 - Improve tracking / bee segmentation
 - Improve pollen detection
@@ -24,9 +19,10 @@ Codebases:
 - [Honeybee tracking](https://groups.oist.jp/bptu/honeybee-tracking-dataset) : Segmented videos of bees inside the hive. Probably not usable for us.
 
 ## Links
-- [Main google drive](https://drive.google.com/drive/u/1/folders/11zfaUx1bwnpHb72if4Cl7ZVFiik_9arI)
-- [Platform code](https://gitlab.com/beewatch/beewatch)
-- [Code of last year's group](https://gitlab.ethz.ch/dykemann/bees/-/tree/master)
+- [Main google drive (Daniel)](https://drive.google.com/drive/u/1/folders/11zfaUx1bwnpHb72if4Cl7ZVFiik_9arI)
+- [Platform code (Anna and Vladimir)](https://gitlab.com/beewatch/beewatch)
+- [GDrive YOLO Object detection (Gabriela)](https://drive.google.com/drive/folders/1tu7YV5I1Xjz1n9GtIPMBlzkZ3ODF3YEQ)
+- [Code of last year's DS Lab](https://gitlab.ethz.ch/dykemann/bees/-/tree/master)
 - [Sciwheel](https://sciwheel.com/work/#/items?collection=322790)
 - [Presentation](https://docs.google.com/presentation/d/1xgliKl0nmlCtK580alNtLTH64os2Mr89TsbV_z9ixqo)
 - [Asana](https://app.asana.com/0/1194842906932241/1194842906932249)
