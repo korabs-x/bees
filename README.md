@@ -1,6 +1,11 @@
 # bees
 Data Science Lab 2020 - Bees
 
+Codebases:
+- [Beewatch Platform (Anna and Vladimir)](https://gitlab.com/beewatch/beewatch)
+- [Last year DS Lab](https://gitlab.ethz.ch/dykemann/bees)
+- [GDrive with Yolo object detection (Gabriela)](https://drive.google.com/drive/folders/1tu7YV5I1Xjz1n9GtIPMBlzkZ3ODF3YEQ)
+
 ## Potential Tasks
 - Improve tracking / bee segmentation
 - Improve pollen detection
