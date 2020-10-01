@@ -14,7 +14,7 @@ Data Science Lab 2020 - Bees
 ## Extra datasets
 - [Pollen Dataset](https://github.com/piperod/PollenDataset) : More cropped images of bees labeled per instance P/NP
 - [Honeybee positions](https://www.kaggle.com/kport354041/honeybee-positions) : Images of the whole hive for tracking bees, includes position & orientation of bees. Might be able to use it for direction prediction, have to crop images of individual bees first.
-- [Honeybee annotated images](https://www.kaggle.com/jenny18/honey-bee-annotated-images?) : 5100 bee images with annotations including pollen (only 18 with pollen). Any ideas if this is useful? I (Korbi) cannot think of how.
+- [Honeybee annotated images](https://www.kaggle.com/jenny18/honey-bee-annotated-images?) : 5100 bee images with annotations including pollen (only 18 with pollen).
 - [Bee vs wasp](https://www.kaggle.com/jerzydziewierz/bee-vs-wasp) : 3183 images of bees on flowers. Probably not usable for us.
 - [Honeybee tracking](https://groups.oist.jp/bptu/honeybee-tracking-dataset) : Segmented videos of bees inside the hive. Probably not usable for us.
 
