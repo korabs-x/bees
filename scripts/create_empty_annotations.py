@@ -3,27 +3,32 @@ Give this script a path to a directory and it will create you an empty text file
 for every image file in that directory.
 
 This script won't override any files that already exist
+
+Usecase: You have labelled all the P's and need empty .txt's for the NPs
 """
 import sys
 import os
 import pathlib
 
 args = sys.argv[1:]
-assert len(args)==1
+assert len(args) == 1
 dir_path = args[0]
 assert pathlib.Path(dir_path).is_dir()
+
 
 def is_image(dir_entry):
     if dir_entry.is_file(follow_symlinks=False):
         fname = dir_entry.name
-        if fname.endswith('.jpg') or fname.endswith('.jpeg'):
+        if fname.endswith(".jpg") or fname.endswith(".jpeg") or fname.endswith(".png"):
             return True
     return False
 
+
 # not a good function, doesn't handle edge cases
 def get_txtname_for_imgname(img_name):
-    name = img_name.replace('.jpg', '').replace('.jpeg', '')
-    return name + '.txt'
+    name = img_name.replace(".jpg", "").replace(".jpeg", "").replace(".png", "")
+    return name + ".txt"
+
 
 for dir_entry in os.scandir(dir_path):
     if is_image(dir_entry):
@@ -31,4 +36,3 @@ for dir_entry in os.scandir(dir_path):
         # make sure to not overwrite anything
         if not pathlib.Path(touch_path).exists():
             pathlib.Path(touch_path).touch()
-
