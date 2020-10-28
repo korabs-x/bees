@@ -9,9 +9,8 @@ from pathlib import Path
 
 args = sys.argv[1:]
 assert len(args) == 1
-
 dir_path = args[0]
-directory =Path(dir_path)
+directory = Path(dir_path)
 assert directory.is_dir()
 
 
@@ -38,7 +37,9 @@ for dir_entry in directory.iterdir():
         else:
             text = annot_file.read_text()
             if text:
-                stats[f"Label {text[0]}"] = stats.get(f"Label {text[0]}", 0) + 1
+                stats[f"Label {text.split(' ')[0]}"] = (
+                    stats.get(f"Label {text.split(' ')[0]}", 0) + 1
+                )
             else:
                 stats["no Label"] += 1
 

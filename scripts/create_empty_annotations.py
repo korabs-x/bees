@@ -7,17 +7,16 @@ This script won't override any files that already exist
 Usecase: You have labelled all the P's and need empty .txt's for the NPs
 """
 import sys
-import os
-import pathlib
+from pathlib import Path
 
 args = sys.argv[1:]
 assert len(args) == 1
-dir_path = args[0]
-assert pathlib.Path(dir_path).is_dir()
+dir_path = Path(args[0])
+assert dir_path.is_dir()
 
 
 def is_image(dir_entry):
-    if dir_entry.is_file(follow_symlinks=False):
+    if dir_entry.is_file():
         fname = dir_entry.name
         if fname.endswith(".jpg") or fname.endswith(".jpeg") or fname.endswith(".png"):
             return True
@@ -30,9 +29,9 @@ def get_txtname_for_imgname(img_name):
     return name + ".txt"
 
 
-for dir_entry in os.scandir(dir_path):
+for dir_entry in dir_path.iterdir():
     if is_image(dir_entry):
-        touch_path = os.path.join(dir_path, get_txtname_for_imgname(dir_entry.name))
+        touch_path = dir_path / Path(get_txtname_for_imgname(dir_entry.name))
         # make sure to not overwrite anything
-        if not pathlib.Path(touch_path).exists():
-            pathlib.Path(touch_path).touch()
+        if not touch_path.exists():
+            touch_path.touch()
