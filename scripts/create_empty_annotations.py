@@ -34,4 +34,5 @@ for dir_entry in dir_path.iterdir():
         touch_path = dir_path / Path(get_txtname_for_imgname(dir_entry.name))
         # make sure to not overwrite anything
         if not touch_path.exists():
+            # create new completely empty file
             touch_path.touch()
