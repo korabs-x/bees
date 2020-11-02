@@ -1,8 +1,14 @@
+import sys
 from pathlib import Path
 
-train = Path("train.txt")
-test = Path("test.txt")
-l_dir = Path(".")
+args = sys.argv[1:]
+assert len(args) == 1, "Need the name of the directory!"
+dir_path = args[0]
+l_dir = Path(dir_path)
+assert l_dir.is_dir()
+
+train = l_dir / Path("train.txt")
+test = l_dir / Path("test.txt")
 
 
 def is_bee_label_file(file):
