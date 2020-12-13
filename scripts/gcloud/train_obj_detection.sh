@@ -10,18 +10,29 @@ fi
 PREFIX="$1"
 GSBUCKET="gs://bee_living_sensor_obj_detection"
 
-# sign into gcloud
-gcloud auth activate-service-account --key-file=bee-living-sensor-da7ae770e263.json
+#
+# SETUP GSUTILS
+#
+if ! command -v gcloud &> /dev/null ; then
+    curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-320.0.0-linux-x86_64.tar.gz
+    tar -xf google-cloud-sdk-320.0.0-linux-x86_64.tar.gz
+    GCLOUD="$HOME/google-cloud-sdk/bin/gcloud"
+    GSUTIL="$HOME/google-cloud-sdk/bin/gsutil"
+else
+    GCLOUD="gcloud"
+    GSUTIL="gsutil"
+fi
+$GCLOUD auth activate-service-account --key-file=bee-living-sensor-da7ae770e263.json
 
 #
 # DATA PREPARATION
 #
 # download all datasets from gstorage
 mkdir -p "$HOME/data/" "$HOME/backup-${PREFIX}/"
-gsutil ls -r "${GSBUCKET}/"** | grep .zip > ~/available_datasets.txt
-gsutil cp -n "$(cat available_datasets.txt)" ~/data/
+$GSUTIL ls -r "${GSBUCKET}/"** | grep .zip > ~/available_datasets.txt
+$GSUTIL cp -n $(cat available_datasets.txt) ~/data/
 cd ~/data
-unzip -q \*.zip
+unzip -qu \*.zip
 cd
 
 # take all image files in validate/ or test/ folders and write full path to test.txt
@@ -34,9 +45,9 @@ find data/ -type f -name \*.jpg | grep -E -v "(/validate/|/test/)" | xargs realp
 #
 sudo apt install -y cmake g++ wget unzip
 wget -N -O opencv.zip https://github.com/opencv/opencv/archive/master.zip
-unzip -q opencv.zip
+unzip -qu opencv.zip
 mkdir -p build && cd build
-cmake  -D OPENCV_GENERATE_PKGCONFIG=YES ../opencv-master
+cmake -D OPENCV_GENERATE_PKGCONFIG=YES ../opencv-master
 cmake --build .
 make && sudo make install
 cd
@@ -54,11 +65,20 @@ sed -i 's/CUDNN=0/CUDNN=1/' Makefile
 sed -i 's/CUDNN_HALF=0/CUDNN_HALF=1/' Makefile
 make
 chmod +x darknet
-
-# download pretrained weights
-wget -N https://github.com/AlexeyAB/darknet/releases/download/darknet_yolo_v3_optimal/yolov4.conv.137
-gsutil cp "${GSBUCKET}/yolov4-custom.cfg" .
+$GSUTIL cp "${GSBUCKET}/yolov4-custom.cfg" .
 sed -i 's:max_batches = 6000:max_batches = 20000:' yolov4-custom.cfg
+
+#
+# DOWNLOAD WEIGHTS
+#
+gsyolo_url=$GSBUCKET/backup-${PREFIX}/yolov4-custom_last.weights
+if $GSUTIL -q stat "$gsyolo_url"; then
+    $GSUTIL cp -n "$gsyolo_url" .
+    weightsfile=yolov4-custom_last.weights
+else
+    wget -N https://github.com/AlexeyAB/darknet/releases/download/darknet_yolo_v3_optimal/yolov4.conv.137
+    weightsfile=yolov4.conv.137
+fi
 
 # make obj.names and obj.data
 printf "bee\n" > obj.names
@@ -66,13 +86,13 @@ printf 'classes = 2\ntrain = %s/train.txt\nvalid = %s/test.txt\nnames = obj.name
 printf 'backup = %s/backup-%s/\n' "$HOME" "$PREFIX" >> obj.data
 
 # run training
-./darknet detector train obj.data yolov4-custom.cfg yolov4.conv.137 -dont_show -map
+./darknet detector train obj.data yolov4-custom.cfg $weightsfile -dont_show -map
 cd
 
 #
 # UPLOAD WEIGHTS
 #
-gsutil cp -n -r "backup-${PREFIX}" "$GSBUCKET"
+$GSUTIL cp -n -r "backup-${PREFIX}" "$GSBUCKET"
 
 #
 # CALC SCORES
@@ -85,4 +105,4 @@ if [[ ! -f "$scorefile" ]]; then
         ./darknet detector map obj.data yolov4-custom.cfg "$weights" >> "$scorefile"
     done
 fi
-gsutil cp "$scorefile" "$GSBUCKET"
+$GSUTIL cp "$scorefile" "$GSBUCKET"
