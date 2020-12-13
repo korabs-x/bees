@@ -60,16 +60,17 @@ cd
 #
 if [[ ! -d darknet ]]; then
     git clone https://github.com/AlexeyAB/darknet darknet/
+    cd darknet
+    sed -i 's/OPENCV=0/OPENCV=1/' Makefile
+    sed -i 's/GPU=0/GPU=1/' Makefile
+    sed -i 's/CUDNN=0/CUDNN=1/' Makefile
+    sed -i 's/CUDNN_HALF=0/CUDNN_HALF=1/' Makefile
+    make
+    chmod +x darknet
+    $GSUTIL cp "${GSBUCKET}/yolov4-custom.cfg" .
+    cd
 fi
 cd darknet
-sed -i 's/OPENCV=0/OPENCV=1/' Makefile
-sed -i 's/GPU=0/GPU=1/' Makefile
-sed -i 's/CUDNN=0/CUDNN=1/' Makefile
-sed -i 's/CUDNN_HALF=0/CUDNN_HALF=1/' Makefile
-make
-chmod +x darknet
-$GSUTIL cp "${GSBUCKET}/yolov4-custom.cfg" .
-sed -i 's:max_batches = 6000:max_batches = 20000:' yolov4-custom.cfg
 
 #
 # DOWNLOAD WEIGHTS
