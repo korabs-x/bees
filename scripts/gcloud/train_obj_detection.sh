@@ -68,6 +68,7 @@ if [[ ! -d darknet ]]; then
     make
     chmod +x darknet
     $GSUTIL cp "${GSBUCKET}/yolov4-custom.cfg" .
+    # sed -i 's:max_batches = 6000:max_batches = 6000:' yolov4-custom.cfg
     cd
 fi
 cd darknet
@@ -113,3 +114,5 @@ if [[ ! -f "$scorefile" ]]; then
     done
 fi
 $GSUTIL cp "$scorefile" "$GSBUCKET"
+
+sudo shutdown -h
