@@ -2,7 +2,12 @@
 
 set -euo pipefail
 
-PREFIX="alldata-2020-12-13"
+if (( $# != 1)); then
+    echo "run using $0 <PREFIX>"
+    exit 1
+fi
+
+PREFIX="$1"
 GSBUCKET="gs://bee_living_sensor_obj_detection"
 
 # sign into gcloud
@@ -12,9 +17,9 @@ gcloud auth activate-service-account --key-file=bee-living-sensor-da7ae770e263.j
 # DATA PREPARATION
 #
 # download all datasets from gstorage
-mkdir ~/data/ ~/backup-${PREFIX}/
+mkdir -p "$HOME/data/" "$HOME/backup-${PREFIX}/"
 gsutil ls -r "${GSBUCKET}/"** | grep .zip > ~/available_datasets.txt
-gsutil cp "$(cat available_datasets.txt)" ~/data/
+gsutil cp -n "$(cat available_datasets.txt)" ~/data/
 cd ~/data
 unzip -q \*.zip
 cd
@@ -28,7 +33,7 @@ find data/ -type f -name \*.jpg | grep -E -v "(/validate/|/test/)" | xargs realp
 # SETUP OPENCV
 #
 sudo apt install -y cmake g++ wget unzip
-wget -O opencv.zip https://github.com/opencv/opencv/archive/master.zip
+wget -N -O opencv.zip https://github.com/opencv/opencv/archive/master.zip
 unzip -q opencv.zip
 mkdir -p build && cd build
 cmake  -D OPENCV_GENERATE_PKGCONFIG=YES ../opencv-master
@@ -39,7 +44,9 @@ cd
 #
 # SETUP DARKNET
 #
-git clone https://github.com/AlexeyAB/darknet darknet/
+if [[ ! -d darknet ]]; then
+    git clone https://github.com/AlexeyAB/darknet darknet/
+fi
 cd darknet
 sed -i 's/OPENCV=0/OPENCV=1/' Makefile
 sed -i 's/GPU=0/GPU=1/' Makefile
@@ -49,7 +56,7 @@ make
 chmod +x darknet
 
 # download pretrained weights
-wget https://github.com/AlexeyAB/darknet/releases/download/darknet_yolo_v3_optimal/yolov4.conv.137
+wget -N https://github.com/AlexeyAB/darknet/releases/download/darknet_yolo_v3_optimal/yolov4.conv.137
 gsutil cp "${GSBUCKET}/yolov4-custom.cfg" .
 sed -i 's:max_batches = 6000:max_batches = 20000:' yolov4-custom.cfg
 
@@ -65,15 +72,17 @@ cd
 #
 # UPLOAD WEIGHTS
 #
-gsutil cp -r backup-${PREFIX} "$GSBUCKET"
+gsutil cp -n -r "backup-${PREFIX}" "$GSBUCKET"
 
 #
 # CALC SCORES
 #
 cd darknet
 scorefile=scores-$PREFIX.txt
-for weights in ~/backup-${PREFIX}; do
-    printf 'Current: %s\n\n' "$weights" >> $scorefile
-    ./darknet detector map obj.data yolov4-custom.cfg $weights >> $scorefile
-done
+if [[ ! -f "$scorefile" ]]; then
+    for weights in ~/backup-${PREFIX}; do
+        printf 'Current: %s\n\n' "$weights" >> "$scorefile"
+        ./darknet detector map obj.data yolov4-custom.cfg "$weights" >> "$scorefile"
+    done
+fi
 gsutil cp "$scorefile" "$GSBUCKET"
