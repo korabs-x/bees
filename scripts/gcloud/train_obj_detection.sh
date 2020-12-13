@@ -50,6 +50,9 @@ mkdir -p build && cd build
 cmake -D OPENCV_GENERATE_PKGCONFIG=YES ../opencv-master
 cmake --build .
 make && sudo make install
+# Without these darknet doesn't find openCV, but I don't know why they work
+sudo /bin/bash -c 'echo "/usr/local/lib" > /etc/ld.so.conf.d/opencv.conf'
+sudo ldconfig
 cd
 
 #
@@ -86,7 +89,7 @@ printf 'classes = 2\ntrain = %s/train.txt\nvalid = %s/test.txt\nnames = obj.name
 printf 'backup = %s/backup-%s/\n' "$HOME" "$PREFIX" >> obj.data
 
 # run training
-./darknet detector train obj.data yolov4-custom.cfg $weightsfile -dont_show -map
+./darknet detector train obj.data yolov4-custom.cfg $weightsfile -dont_show
 cd
 
 #
