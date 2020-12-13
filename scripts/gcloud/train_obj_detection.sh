@@ -87,7 +87,10 @@ fi
 # make obj.names and obj.data
 printf "bee\n" > obj.names
 printf 'classes = 2\ntrain = %s/train.txt\nvalid = %s/test.txt\nnames = obj.names\n' "$HOME" "$HOME" > obj.data
-printf 'backup = %s/backup-%s/\n' "$HOME" "$PREFIX" >> obj.data
+printf 'backup = %s/backup-%s\n' "$HOME" "$PREFIX" >> obj.data
+
+# start background backup process
+screen -d -m -S backup_process bash "$HOME/periodic_backup.sh" "$PREFIX"
 
 # run training
 ./darknet detector train obj.data yolov4-custom.cfg $weightsfile -dont_show
