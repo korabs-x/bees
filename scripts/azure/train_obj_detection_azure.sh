@@ -59,6 +59,7 @@ cd
 # SETUP DARKNET
 #
 if [[ ! -d darknet ]]; then
+    sudo apt-get -y install nvidia-cuda-toolkit
     git clone https://github.com/AlexeyAB/darknet darknet/
     cd darknet
     sed -i 's/OPENCV=0/OPENCV=1/' Makefile
