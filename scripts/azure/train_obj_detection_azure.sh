@@ -22,7 +22,7 @@ $GCLOUD auth activate-service-account --key-file=bee-living-sensor-da7ae770e263.
 #
 # download all datasets from gstorage
 mkdir -p "$HOME/data/" "$HOME/backup-${PREFIX}/"
-$GSUTIL ls -r "${GSBUCKET}/"** | grep .zip > ~/available_datasets.txt
+$GSUTIL ls -r "${GSBUCKET}/"** | grep .zip | grep -E -v "fileshare" > ~/available_datasets.txt
 $GSUTIL cp -n $(cat available_datasets.txt) ~/data/
 cd ~/data
 unzip -qu \*.zip
@@ -50,27 +50,24 @@ if [[ ! -d darknet ]]; then
     cd
 fi
 cd darknet
-sed -i -E 's:max_batches = [0-9]{1,2}000:max_batches = 6000:' yolov4-custom.cfg
 
 #
 # DOWNLOAD WEIGHTS
 #
-gsyolo_url=$GSBUCKET/backup-${PREFIX}/yolov4-custom_last.weights
-if $GSUTIL -q stat "$gsyolo_url"; then
-    $GSUTIL cp -n "$gsyolo_url" .
-    weightsfile=yolov4-custom_last.weights
-else
-    wget -N https://github.com/AlexeyAB/darknet/releases/download/darknet_yolo_v3_optimal/yolov4.conv.137
-    weightsfile=yolov4.conv.137
-fi
+wget -N https://github.com/AlexeyAB/darknet/releases/download/darknet_yolo_v3_optimal/yolov4.conv.137
 
 # make obj.names and obj.data
 printf "bee\n" > obj.names
 printf 'classes = 2\ntrain = %s/train.txt\nvalid = %s/test.txt\nnames = obj.names\n' "$HOME" "$HOME" > obj.data
 printf 'backup = %s/backup-%s\n' "$HOME" "$PREFIX" >> obj.data
 
-# run training
-./darknet detector train obj.data yolov4-custom.cfg $weightsfile -dont_show -map
+# run training, single GPU start
+sed -i -E 's:max_batches = [0-9]{1,2}000:max_batches = 1000:' yolov4-custom.cfg
+weightsfile=yolov4.conv.137
+./darknet detector train obj.data yolov4-custom.cfg "$weightsfile" -dont_show -map
+sed -i -E 's:max_batches = [0-9]{1,2}000:max_batches = 6000:' yolov4-custom.cfg
+weightsfile="$HOME/backup-${PREFIX}/yolov4-custom_1000.weights"
+./darknet detector train obj.data yolov4-custom.cfg "$weightsfile" -dont_show -map
 cd
 
 #
@@ -90,3 +87,4 @@ if [[ ! -f "$scorefile" ]]; then
     done
 fi
 $GSUTIL cp "$scorefile" "$GSBUCKET"
+cd "$HOME"
