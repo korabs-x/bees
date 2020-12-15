@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -euo pipefail
+set -xeuo pipefail
 
 if (( $# != 1)); then
     echo "run using $0 <PREFIX>"
@@ -13,15 +13,8 @@ GSBUCKET="gs://bee_living_sensor_obj_detection"
 #
 # SETUP GSUTILS
 #
-if ! command -v gcloud &> /dev/null ; then
-    curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-320.0.0-linux-x86_64.tar.gz
-    tar -xf google-cloud-sdk-320.0.0-linux-x86_64.tar.gz
-    GCLOUD="$HOME/google-cloud-sdk/bin/gcloud"
-    GSUTIL="$HOME/google-cloud-sdk/bin/gsutil"
-else
-    GCLOUD="gcloud"
-    GSUTIL="gsutil"
-fi
+GCLOUD="gcloud"
+GSUTIL="gsutil"
 $GCLOUD auth activate-service-account --key-file=bee-living-sensor-da7ae770e263.json
 
 #
@@ -41,21 +34,6 @@ find data/ -type f -name \*.jpg | grep -E "(/validate/|/test/)" | xargs realpath
 find data/ -type f -name \*.jpg | grep -E -v "(/validate/|/test/)" | xargs realpath > train.txt
 
 #
-# SETUP OPENCV
-#
-sudo apt install -y cmake g++ wget unzip
-wget -N -O opencv.zip https://github.com/opencv/opencv/archive/master.zip
-unzip -qu opencv.zip
-mkdir -p build && cd build
-cmake -D OPENCV_GENERATE_PKGCONFIG=YES ../opencv-master
-cmake --build .
-make && sudo make install
-# Without these darknet doesn't find openCV, but I don't know why they work
-sudo /bin/bash -c 'echo "/usr/local/lib" > /etc/ld.so.conf.d/opencv.conf'
-sudo ldconfig
-cd
-
-#
 # SETUP DARKNET
 #
 if [[ ! -d darknet ]]; then
@@ -69,10 +47,10 @@ if [[ ! -d darknet ]]; then
     make
     chmod +x darknet
     $GSUTIL cp "${GSBUCKET}/yolov4-custom.cfg" .
-    # sed -i 's:max_batches = 6000:max_batches = 6000:' yolov4-custom.cfg
     cd
 fi
 cd darknet
+sed -i -E 's:max_batches = [0-9]{1,2}000:max_batches = 6000:' yolov4-custom.cfg
 
 #
 # DOWNLOAD WEIGHTS
@@ -108,7 +86,7 @@ scorefile=scores-$PREFIX.txt
 if [[ ! -f "$scorefile" ]]; then
     for weights in ~/backup-${PREFIX}/*; do
         printf 'Current: %s\n\n' "$(basename $weights)" >> "$scorefile"
-        ./darknet detector map obj.data yolov4-custom.cfg "$weights" >> "$scorefile"
+        ./darknet detector map obj.data yolov4-custom.cfg "$weights" -thresh 0.25 >> "$scorefile"
     done
 fi
 $GSUTIL cp "$scorefile" "$GSBUCKET"
