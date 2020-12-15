@@ -108,7 +108,7 @@ $GSUTIL cp -n -r "backup-${PREFIX}" "$GSBUCKET"
 cd darknet
 scorefile=scores-$PREFIX.txt
 if [[ ! -f "$scorefile" ]]; then
-    for weights in ~/backup-${PREFIX}; do
+    for weights in ~/backup-${PREFIX}/*; do
         printf 'Current: %s\n\n' "$weights" >> "$scorefile"
         ./darknet detector map obj.data yolov4-custom.cfg "$weights" >> "$scorefile"
     done
