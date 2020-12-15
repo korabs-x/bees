@@ -107,7 +107,7 @@ cd darknet
 scorefile=scores-$PREFIX.txt
 if [[ ! -f "$scorefile" ]]; then
     for weights in ~/backup-${PREFIX}/*; do
-        printf 'Current: %s\n\n' "$weights" >> "$scorefile"
+        printf 'Current: %s\n\n' "$(basename $weights)" >> "$scorefile"
         ./darknet detector map obj.data yolov4-custom.cfg "$weights" >> "$scorefile"
     done
 fi
