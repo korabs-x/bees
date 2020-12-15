@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -euo pipefail
+set -exuo pipefail
 
 if (( $# != 1)); then
     echo "run using $0 <PREFIX>"
