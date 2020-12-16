@@ -29,9 +29,9 @@ unzip -qu \*.zip
 cd
 
 # take all image files in validate/ or test/ folders and write full path to test.txt
-find data/ -type f -name \*.jpg | grep -E "(/validate/|/test/)" | xargs realpath > test.txt
-# take all other image files and write full path to test.txt
-find data/ -type f -name \*.jpg | grep -E -v "(/validate/|/test/)" | xargs realpath > train.txt
+find data/ -type f -regextype sed -regex ".*\(jpeg\|jpg\|png\)" | grep -E "(/validate/|/test/)" | xargs realpath > test.txt
+# take all other image files and write full path to train.txt
+find data/ -type f -regextype sed -regex ".*\(jpeg\|jpg\|png\)" | grep -E -v "(/validate/|/test/)" | xargs realpath > train.txt
 
 #
 # SETUP DARKNET
@@ -46,7 +46,6 @@ if [[ ! -d darknet ]]; then
     sed -i 's/CUDNN_HALF=0/CUDNN_HALF=1/' Makefile
     make
     chmod +x darknet
-    $GSUTIL cp "${GSBUCKET}/yolov4-custom.cfg" .
     cd
 fi
 cd darknet
@@ -54,6 +53,7 @@ cd darknet
 #
 # DOWNLOAD WEIGHTS
 #
+$GSUTIL cp "${GSBUCKET}/yolov4-custom.cfg" .
 wget -N https://github.com/AlexeyAB/darknet/releases/download/darknet_yolo_v3_optimal/yolov4.conv.137
 
 # make obj.names and obj.data
@@ -65,9 +65,10 @@ printf 'backup = %s/backup-%s\n' "$HOME" "$PREFIX" >> obj.data
 sed -i -E 's:max_batches = [0-9]{1,2}000:max_batches = 1000:' yolov4-custom.cfg
 weightsfile=yolov4.conv.137
 ./darknet detector train obj.data yolov4-custom.cfg "$weightsfile" -dont_show -map
+# switch to multip gpu
 sed -i -E 's:max_batches = [0-9]{1,2}000:max_batches = 6000:' yolov4-custom.cfg
 weightsfile="$HOME/backup-${PREFIX}/yolov4-custom_1000.weights"
-./darknet detector train obj.data yolov4-custom.cfg "$weightsfile" -dont_show -map
+./darknet detector train obj.data yolov4-custom.cfg "$weightsfile" -dont_show -map -gpus 0,1
 cd
 
 #
