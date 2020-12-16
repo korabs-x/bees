@@ -51,7 +51,7 @@ fi
 cd darknet
 
 #
-# DOWNLOAD WEIGHTS
+# DOWNLOAD WEIGHTS & CONFIG
 #
 $GSUTIL cp "${GSBUCKET}/yolov4-custom.cfg" .
 wget -N https://github.com/AlexeyAB/darknet/releases/download/darknet_yolo_v3_optimal/yolov4.conv.137
@@ -74,6 +74,9 @@ cd
 #
 # UPLOAD WEIGHTS
 #
+# these are the same as the yolov4-custom_MAXITER.weights file
+rm "backup-${PREFIX}/yolov4-custom_final.weights"
+rm "backup-${PREFIX}/yolov4-custom_last.weights"
 $GSUTIL cp -n -r "backup-${PREFIX}" "$GSBUCKET"
 
 #
@@ -89,3 +92,10 @@ if [[ ! -f "$scorefile" ]]; then
 fi
 $GSUTIL cp "$scorefile" "$GSBUCKET"
 cd "$HOME"
+
+#
+# CLEANUP
+#
+rm -r "backup-${PREFIX}"
+rm -r data
+rm -r darknet/yolov4-custom.cfg
