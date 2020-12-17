@@ -22,7 +22,7 @@ $GCLOUD auth activate-service-account --key-file=bee-living-sensor-da7ae770e263.
 #
 # download all datasets from gstorage
 mkdir -p "$HOME/data/" "$HOME/backup-${PREFIX}/"
-$GSUTIL ls -r "${GSBUCKET}/"** | grep .zip | grep -E -v "fileshare" > ~/available_datasets.txt
+$GSUTIL ls -r "${GSBUCKET}/"** | grep .zip | grep -E -v "(fileshare|mturk)" > ~/available_datasets.txt
 $GSUTIL cp -n $(cat available_datasets.txt) ~/data/
 cd ~/data
 unzip -qu \*.zip
@@ -57,10 +57,9 @@ $GSUTIL cp "${GSBUCKET}/yolov4-custom.cfg" .
 wget -N https://github.com/AlexeyAB/darknet/releases/download/darknet_yolo_v3_optimal/yolov4.conv.137
 
 # set config
-sed -i -E "s/subdivisions=[[:digit:]]{2}/subdivisions=8/" yolov4-custom.cfg
+sed -i -E "s/subdivisions=[[:digit:]]{2}/subdivisions=32/" yolov4-custom.cfg
 sed -i -E "s/width=[[:digit:]]{3}/width=608/" yolov4-custom.cfg
 sed -i -E "s/height=[[:digit:]]{3}/height=608/" yolov4-custom.cfg
-# don't really no what this is
 sed -i -E "s/scales=\.[[:digit:]],\.[[:digit:]]/scales=.1,.2/" yolov4-custom.cfg
 
 # make obj.names and obj.data
