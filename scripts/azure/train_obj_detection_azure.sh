@@ -57,7 +57,7 @@ $GSUTIL cp "${GSBUCKET}/yolov4-custom.cfg" .
 wget -N https://github.com/AlexeyAB/darknet/releases/download/darknet_yolo_v3_optimal/yolov4.conv.137
 
 # set config
-sed -i -E "s/subdivisions=[[:digit:]]{2}/subdivisions=32/" yolov4-custom.cfg
+sed -i -E "s/subdivisions=[[:digit:]]{2}/subdivisions=8/" yolov4-custom.cfg
 sed -i -E "s/width=[[:digit:]]{3}/width=608/" yolov4-custom.cfg
 sed -i -E "s/height=[[:digit:]]{3}/height=608/" yolov4-custom.cfg
 # don't really no what this is
