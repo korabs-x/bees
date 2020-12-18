@@ -9,6 +9,7 @@ fi
 
 PREFIX="$1"
 GSBUCKET="gs://bee_living_sensor_obj_detection"
+MAXITER=6000
 
 #
 # SETUP GSUTILS
@@ -72,7 +73,7 @@ sed -i -E 's:max_batches = [0-9]{1,2}000:max_batches = 1000:' yolov4-custom.cfg
 weightsfile=yolov4.conv.137
 ./darknet detector train obj.data yolov4-custom.cfg "$weightsfile" -dont_show -map
 # switch to multip gpu
-sed -i -E 's:max_batches = [0-9]{1,2}000:max_batches = 6000:' yolov4-custom.cfg
+sed -i -E "s:max_batches = [0-9]{1,2}000:max_batches = ${MAXITER}:" yolov4-custom.cfg
 weightsfile="$HOME/backup-${PREFIX}/yolov4-custom_1000.weights"
 ./darknet detector train obj.data yolov4-custom.cfg "$weightsfile" -dont_show -map -gpus 0,1
 cd
@@ -98,6 +99,12 @@ if [[ ! -f "$scorefile" ]]; then
 fi
 $GSUTIL cp "$scorefile" "$GSBUCKET"
 cd "$HOME"
+
+final_weights="backup-${PREFIX}/yolov4-custom_${MAXITER}.weights"
+if [[ -f $final_weights ]]; then
+    ./eval_each_folder "$PREFIX" "$final_weights"
+    $GSUTIL cp "scores-each-${PREFIX}.txt" "$GSBUCKET"
+fi
 
 #
 # CLEANUP
