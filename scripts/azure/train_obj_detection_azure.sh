@@ -102,8 +102,8 @@ cd "$HOME"
 
 final_weights="backup-${PREFIX}/yolov4-custom_${MAXITER}.weights"
 if [[ -f $final_weights ]]; then
-    ./eval_each_folder "$PREFIX" "$final_weights"
-    $GSUTIL cp "scores-each-${PREFIX}.txt" "$GSBUCKET"
+    ./eval_each_folder.sh "$PREFIX" "$final_weights"
+    $GSUTIL cp "darknet/scores-each-${PREFIX}.txt" "$GSBUCKET"
 fi
 
 #
