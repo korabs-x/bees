@@ -57,10 +57,16 @@ cd darknet
 $GSUTIL cp "${GSBUCKET}/yolov4-custom.cfg" .
 wget -N https://github.com/AlexeyAB/darknet/releases/download/darknet_yolo_v3_optimal/yolov4.conv.137
 
-# set config
+#
+# SETUP CONFIG
+#
+# more subdivisions -> less GPU memory consumed
 sed -i -E "s/subdivisions=[[:digit:]]{2}/subdivisions=32/" yolov4-custom.cfg
+# both width & height need to be a multiple of 32
+# small: 224; medium: 416; large: 608
 sed -i -E "s/width=[[:digit:]]{3}/width=608/" yolov4-custom.cfg
 sed -i -E "s/height=[[:digit:]]{3}/height=608/" yolov4-custom.cfg
+# learning rate decay
 sed -i -E "s/scales=\.[[:digit:]],\.[[:digit:]]/scales=.1,.2/" yolov4-custom.cfg
 
 # make obj.names and obj.data
@@ -89,6 +95,7 @@ $GSUTIL cp -n -r "backup-${PREFIX}" "$GSBUCKET"
 #
 # CALC SCORES
 #
+# total score on all hives, for each .weights file produced
 cd darknet
 scorefile=scores-$PREFIX.txt
 if [[ ! -f "$scorefile" ]]; then
@@ -100,6 +107,7 @@ fi
 $GSUTIL cp "$scorefile" "$GSBUCKET"
 cd "$HOME"
 
+# for the final weight: scores per hive
 final_weights="backup-${PREFIX}/yolov4-custom_${MAXITER}.weights"
 if [[ -f $final_weights ]]; then
     ./eval_each_folder.sh "$PREFIX" "$final_weights"
