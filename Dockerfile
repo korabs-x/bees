@@ -42,7 +42,12 @@ FROM nvidia/cuda:10.2-cudnn7-runtime-ubuntu18.04
 SHELL ["/bin/bash", "-c"]
 
 WORKDIR /home/yolo
-COPY yolov4-custom.cfg yolov4-custom_6000.weights ./
+# pick any weights you like, but make sure the yolov4-custom.cfg
+# has the correct width and height saved (I always set them equal)
+# small: 224; medium: 416; large: 608
+# by default width and height are set to 608 in the yolov4-custom.cfg
+# and to 224 in yolov4-tiny-custom.cfg
+COPY yolov4-custom.cfg yolov4-tiny-custom.cfg yolov4-custom_6000.weights yolov4-tiny-custom_28000.weights ./
 
 COPY --from=builder /home/yolo/darknet/darknet ./
 COPY --from=builder /home/yolo/darknet/data/labels ./data/labels
@@ -50,5 +55,7 @@ COPY --from=builder /usr/local/lib /usr/local/lib
 
 RUN printf "bee\n" > obj.names &&\
   printf 'classes = 2\nnames = obj.names\n' > obj.data
+
+RUN apt-get update && apt-get install -y python3 python3-pip
 
 CMD ["/bin/bash", "-l"]
