@@ -46,10 +46,10 @@ The large model has it's config file in `yolov4-custom.cfg`, the tiny one is `yo
 The tiny one is worse, but reaches ~10x the framerate of the large one.
 
 ### Tracking
-Included are the labels for the video Doettingen_Hive_1_M_Rec_20200427_171545_540_M.mp4, frames 1200 to 1499 (seconds 48-60). Insert the file in tracking/data and run tracking.py to evaluate both SORT and the original tracking algorithm.
+Included are the labels for the video `Doettingen_Hive_1_M_Rec_20200427_171545_540_M.mp4`, frames 1200 to 1499 (seconds 48-60). Insert the file in `tracking/data` and run `tracking.py` to evaluate both SORT and the original tracking algorithm.
 
 ### Color correction & Pollen clustering
-pollen_clustering/cluster_pollen.py includes the code to perform color correction based on gray reference pixels. Example images and labels are included in pollen_clustering/data/colorcorrection_pollen_imgs and pollen_clustering/data/colorcorrection_labels, respectively. Running cluster_pollen.py clusters the pollen and creates plots of the clustered pollen images and outputs the homogeneity score of the computed clusters.
+`pollen_clustering/cluster_pollen.py` includes the code to perform color correction based on gray reference pixels. Example images and labels are included in `pollen_clustering/data/colorcorrection_pollen_imgs` and `pollen_clustering/data/colorcorrection_labels`, respectively. Running `cluster_pollen.py` clusters the pollen and creates plots of the clustered pollen images and outputs the homogeneity score of the computed clusters.
 
 
 
